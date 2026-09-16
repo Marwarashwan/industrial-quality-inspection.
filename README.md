@@ -60,3 +60,20 @@ With the help of GitHub Actions, every time new defect-detection logic or thresh
     if __name__ == "__main__":
         # Point to your test image path
         inspect_part("src/Sample_testing/copy.jpg")
+
+## The First Output:
+## Output Explanation: 
+Found 8 Contours/Features: OpenCV's findContours function found 8 different boundary paths on the flower (the outline of the petals and inner shading/fold lines).
+Look closely at the output_result.png preview pane: you can see thin green outlines around the flower petals. This is the same technique that is employed in a typical industrial vision system for product shape verification, dimension measurement and identifying manufacturing defects, such as scratches or missing parts.
+<img width="886" height="532" alt="Screenshot 2026-09-16 at 2 35 58 pm" src="https://github.com/user-attachments/assets/4cfed742-1b03-44b7-b3f5-cb38c236a6d3" />
+
+# Whats Next??
+In step 1, add a Quantitative Defect Decision Logic.
+To save time and eliminate the need to manually check output_result.png and determine if the gear passes quality control, modify your Python script to calculate quantitative measurements (area, circularity, or number of contours to expect) and produce an auto-generated PASS or FAIL decision.
+
+Step 2: Create a Covered Batch Testing Policy
+To avoid having to change the image file path each time, modify inspector.py to process all test images in src/Sample_testing/ in one go, and create a summary report:
+
+Process all .jpg and .png files in the folder and write a script using Python's os.listdir() or glob module.
+
+Inspection Report: Generate a console output with a structured summary of the inspection result of each of the tested components (e.g. gear.jpg: PASS, broken_gear.jpg: REJECT).
