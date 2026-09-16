@@ -18,3 +18,45 @@ With the help of GitHub Actions, every time new defect-detection logic or thresh
 
 # Part Of The CodeSpace 💻
 <img width="1550" height="700" alt="Screenshot 2026-09-16 at 2 09 05 pm" src="https://github.com/user-attachments/assets/3ca65525-37d7-4249-97d0-4862a3ebcdd4" />
+
+
+    import cv2
+    import numpy as np
+    import os
+    
+    def inspect_part(image_relative_path):
+        # Resolve full path dynamically so it works in any environment
+        project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        full_image_path = os.path.join(project_root, image_relative_path)
+    
+        # Check if file exists
+        if not os.path.exists(full_image_path):
+            print(f"❌ Error: Image file not found at '{full_image_path}'")
+            return
+    
+        # Load component image
+        img = cv2.imread(full_image_path)
+        if img is None:
+            print(f"❌ Error: Unable to decode image at '{full_image_path}'")
+            return
+    
+        # Image Processing Pipeline
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+        edges = cv2.Canny(blurred, 50, 150)
+    
+        # Detect contours (structural bounds & defects)
+        contours, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        print(f"✅ Inspection Run Success: Detected {len(contours)} features/contours.")
+    
+        # Annotate detected contours with a green outline
+        cv2.drawContours(img, contours, -1, (0, 255, 0), 2)
+    
+        # Save output image in the same directory as input
+        output_path = os.path.join(os.path.dirname(full_image_path), "output_result.png")
+        cv2.imwrite(output_path, img)
+        print(f"📸 Processed result saved to: '{output_path}'")
+    
+    if __name__ == "__main__":
+        # Point to your test image path
+        inspect_part("src/Sample_testing/copy.jpg")
