@@ -109,3 +109,85 @@ Inspection Report: Generate a console output with a structured summary of the in
 
 ## The Code for The Sample Pictures:
 <img width="1092" height="769" alt="Screenshot 2026-09-17 at 9 37 19 am" src="https://github.com/user-attachments/assets/55d86039-2465-4efc-85f5-465e08c9cce1" />
+
+# STEP TWO: TESTING ACTUAL GEAR PICTURES AND ANALYZE IT 📑:
+<img width="915" height="586" alt="Screenshot 2026-09-17 at 10 50 37 am" src="https://github.com/user-attachments/assets/12fbb260-53ab-49ad-a435-843cd0c2a929" />
+
+Git Sync & Push Success
+Your rebase included remote changes without any conflict and you have your commit with batch_inspector.py and test assets up and running in GitHub.
+
+The Contour Extraction & Decision Engine Execution is an executable application that processes the extracted contours to make decisions.
+The script ran the image, found 8 raw contours, removed the smallest ones (< 100 pixels), and matched 4 major contours to your classification rule for the Spur / External Gear (Solidity < 0.75).
+
+What are the reasons that there is no output image yet?
+
+Your batch_inspector.py script now reads and computes the contour geometry, but it's lacking the contour-drawing and file-writing OpenCV functions (cv2.drawContours, cv2.putText, or cv2.imwrite).
+
+To save an annotated output_result.png image with green overlays and text labels, add rendering steps right before saving the image file.
+
+Key Upgrades & Fixes Applied
+
+Safe File Loading Strategy: Implicit test for img is None, added explicit test for this. This prevents cv2.cvtColor from throwing a fatal (-215:Assertion failed) !_src.empty() assertion crash if an image path is invalid or missing.
+
+Sensitivity & Noise Thresholding: reduced the noise filtering area from < 500 to < 100. This will enable smaller mechanical contours or finer tooth profiles to register rather than being ignored silently.
+
+The integrated cv2 is the Feature Extraction & Classification Pipeline.Directly included convexHull and perimeter metrics in the classification decision tree (Solidity and Circularity calculation) for automatic differentiation of the gear geometry.
+
+Console Telemetry: Added logging (Total raw contours found, individual Contour Area printouts, and -> MATCH statements) for real-time feedback on the vision pipeline's performance on the console.
+
+# THE CODE:
+    import cv2
+    import numpy as np
+    
+    def classify_gear(image_path, output_path="src/Sample_testing/output_result.png"):
+        img = cv2.imread(image_path)
+        if img is None:
+            print(f"Could not open image at {image_path}")
+            return
+    
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+        edges = cv2.Canny(blurred, 50, 150)
+    
+        contours, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        print(f"Total raw contours found: {len(contours)}")
+    
+        # Create a copy of the image to draw visual overlays on
+        annotated_img = img.copy()
+    
+        for cnt in contours:
+            area = cv2.contourArea(cnt)
+            perimeter = cv2.arcLength(cnt, True)
+    
+            print(f"Contour Area: {area:.1f} | Perimeter: {perimeter:.1f}")
+    
+            if perimeter == 0 or area < 100: 
+                continue 
+    
+            # Calculate shape descriptors
+            circularity = (4 * np.pi * area) / (perimeter ** 2)
+            hull = cv2.convexHull(cnt)
+            hull_area = cv2.contourArea(hull)
+            solidity = float(area) / hull_area if hull_area > 0 else 0
+    
+            # Classification decision rules
+            if solidity < 0.75:
+                gear_type = "Spur / External Gear"
+                color = (0, 255, 0)  # Green for detected gear contours
+            elif circularity > 0.85:
+                gear_type = "Smooth Bearing"
+                color = (255, 0, 0)  # Blue for circular profiles
+            else:
+                gear_type = "Internal / Special Gear"
+                color = (0, 165, 255) # Orange for internal features
+    
+            print(f"-> MATCH: {gear_type} | Solidity: {solidity:.2f} | Circularity: {circularity:.2f}")
+    
+            # Draw contour outline on the output image
+            cv2.drawContours(annotated_img, [cnt], -1, color, 2)
+    
+        # Save the visual inspection output image
+        cv2.imwrite(output_path, annotated_img)
+        print(f"\nVisual inspection output saved to: {output_path}")
+    
+    classify_gear("src/Sample_testing/copy.jpg")
