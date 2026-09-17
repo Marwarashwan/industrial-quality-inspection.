@@ -107,10 +107,10 @@ Inspection Report: Generate a console output with a structured summary of the in
 
 4. Interactive Quality Stations: Physical HMI console stations with audio-visual indicators (buzzers, LEDs and displays) which direct the assembly operator through the manual routines of product assembly step-by-step.
 
-## The Code for The Sample Pictures:
+## The Code for The Sample Pictures- Step One ✅:
 <img width="1092" height="769" alt="Screenshot 2026-09-17 at 9 37 19 am" src="https://github.com/user-attachments/assets/55d86039-2465-4efc-85f5-465e08c9cce1" />
 
-# STEP TWO: TESTING ACTUAL GEAR PICTURES AND ANALYSE IT 📑:
+# STEP TWO ✅: TESTING ACTUAL GEAR PICTURES AND ANALYSE IT 📑:
 <img width="915" height="586" alt="Screenshot 2026-09-17 at 10 50 37 am" src="https://github.com/user-attachments/assets/12fbb260-53ab-49ad-a435-843cd0c2a929" />
 
 Git Sync & Push Success
@@ -138,8 +138,10 @@ Console Telemetry: Added logging (Total raw contours found, individual Contour A
 # THE CODE:
     import cv2
     import numpy as np
+    import os
+    import glob
     
-    def classify_gear(image_path, output_path="src/Sample_testing/output_result.png"):
+    def classify_gear(image_path, output_dir="src/Sample_testing"):
         img = cv2.imread(image_path)
         if img is None:
             print(f"Could not open image at {image_path}")
@@ -149,45 +151,149 @@ Console Telemetry: Added logging (Total raw contours found, individual Contour A
         blurred = cv2.GaussianBlur(gray, (5, 5), 0)
         edges = cv2.Canny(blurred, 50, 150)
     
-        contours, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-        print(f"Total raw contours found: {len(contours)}")
-    
-        # Create a copy of the image to draw visual overlays on
+        contours, _ = cv2.findContours(edges, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
         annotated_img = img.copy()
     
         for cnt in contours:
             area = cv2.contourArea(cnt)
             perimeter = cv2.arcLength(cnt, True)
     
-            print(f"Contour Area: {area:.1f} | Perimeter: {perimeter:.1f}")
-    
-            if perimeter == 0 or area < 100: 
+            if perimeter == 0 or area < 1000 or area > (img.shape[0] * img.shape[1] * 0.9): 
                 continue 
     
-            # Calculate shape descriptors
-            circularity = (4 * np.pi * area) / (perimeter ** 2)
+            x, y, w, h = cv2.boundingRect(cnt)
+            aspect_ratio = float(w) / h
             hull = cv2.convexHull(cnt)
             hull_area = cv2.contourArea(hull)
             solidity = float(area) / hull_area if hull_area > 0 else 0
     
-            # Classification decision rules
-            if solidity < 0.75:
+            # Gear classification logic
+            if 0.8 <= aspect_ratio <= 1.2 and 0.40 <= solidity <= 0.85:
                 gear_type = "Spur / External Gear"
-                color = (0, 255, 0)  # Green for detected gear contours
-            elif circularity > 0.85:
-                gear_type = "Smooth Bearing"
-                color = (255, 0, 0)  # Blue for circular profiles
+                color = (0, 255, 0)
             else:
-                gear_type = "Internal / Special Gear"
-                color = (0, 165, 255) # Orange for internal features
+                gear_type = "Non-Gear / Irregular Object"
+                color = (0, 0, 255)
     
-            print(f"-> MATCH: {gear_type} | Solidity: {solidity:.2f} | Circularity: {circularity:.2f}")
+            print(f"[{os.path.basename(image_path)}] {gear_type} | Solidity: {solidity:.2f} | Aspect Ratio: {aspect_ratio:.2f}")
     
-            # Draw contour outline on the output image
             cv2.drawContours(annotated_img, [cnt], -1, color, 2)
+            cv2.putText(annotated_img, gear_type, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
     
-        # Save the visual inspection output image
+        # Save output using the original filename
+        os.makedirs(output_dir, exist_ok=True)
+        filename = os.path.basename(image_path)
+        output_path = os.path.join(output_dir, f"result_{filename}")
         cv2.imwrite(output_path, annotated_img)
-        print(f"\nVisual inspection output saved to: {output_path}")
     
-    classify_gear("src/Sample_testing/copy.jpg")
+    if __name__ == "__main__":
+        # Automatically scan and process all images in src/images/
+        image_files = glob.glob("src/images/*.[jJ][pP]*[gG]") + glob.glob("src/images/*.webp")
+        print(f"Found {len(image_files)} images to process in src/images/\n")
+        for img_path in image_files:
+            classify_gear(img_path)
+
+
+# Final Results:
+<img width="1329" height="819" alt="Screenshot 2026-09-17 at 12 11 16 pm" src="https://github.com/user-attachments/assets/0384acd9-18d0-4f4e-b6f1-a27a8233ea56" />
+<img width="1329" height="819" alt="Screenshot 2026-09-17 at 12 10 56 pm" src="https://github.com/user-attachments/assets/e3f438e0-23d6-4a16-b024-b18d4034371e" />
+<img width="1329" height="819" alt="Screenshot 2026-09-17 at 12 10 42 pm" src="https://github.com/user-attachments/assets/daf33678-fbc8-4aff-b58a-cbff1345c04d" />
+
+## 1. The shift to Machine Learning (ML) is underway.The shift to Machine Learning (ML) is in progress.
+
+The traditional OpenCV geometry rules (solidity, circularity, aspect ratio) are effective with clean images but not with real industrial scenes such as light variations, rust, shadows, surface wear, etc. Machine Learning enables your system to adjust to these real world conditions:
+
+Old-fashioned OpenCV (What you're used to): You write hardcoded geometric rules by hand (e.g., if solidity < 0.75). If a gear has any minor nick, missing tooth or greasy smudge, the solidity calculation is reduced and you break your rule.
+
+Classical ML (SVM / Random Forest): You provide extracted OpenCV measurements (area, perimeter, solidity, circularity, number of convex hull defects) to an ML classifier, rather than manually writing if / else rules. The algorithm is trained to distinguish between "Good Gear," "Defective Gear," and "Non-Gear" based on its optical characteristics.
+
+Instead of manually measuring contours, the Deep Learning (YOLOv8 / CNNs) approach examines raw pixels directly. It automatically detects, crops, and classifies complex multi-gear gearboxes, worn teeth and surface defects even in the dark or heavy rust.
+
+The recommended Next Step is to remain using OpenCV feature extraction for the time being, but store the metrics that you calculated (solidity, circularity, aspect_ratio) in a CSV file. Next, it will be the exact training data required to train a Scikit-Learn ML model!
+
+## 2. Simplifying Visual Outputs
+
+When the contrast of gear images is high, the background is textured or rusty, cv2.findContours identifies hundreds of small pieces of edges. If you draw all the fragments, then you're left with messy, confusing lines.
+
+Use these refined targeted enhancements in src/batch_inspector.py to create clean, professional overlays:
+
+Use a high contour area filter for small noise (e.g., area < 2500) to eliminate very small surface features and background flecks.
+
+To draw the External Gear Profile: Pass cv2.Replace cv2. with RETR_EXTERNAL.While drawing main overlays use RETR_TREE to draw only the outermost silhouette and not each and every little internal shadow line.
+
+Smooth Out the Contour Overlays: Use cv2.approxPolyDP: Approximate and smooth jagged edges of pixel boundaries before calling cv2.drawContours.
+
+Clean Text & Bounding Boxes: Draw a clean rectangle around the main gear detected, and label it on a separate dark background card above its top.
+
+# The Clean Version (Before testing):
+    import cv2
+    import numpy as np
+    import os
+    import glob
+    
+    def classify_gear(image_path, output_dir="src/Sample_testing"):
+        img = cv2.imread(image_path)
+        if img is None:
+            print(f"Could not open image at {image_path}")
+            return
+
+    # 1. Preprocessing: Grayscale & Stronger Blur to smooth out noise/rust
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    blurred = cv2.GaussianBlur(gray, (9, 9), 0)
+    edges = cv2.Canny(blurred, 30, 120)
+
+    # 2. Extract ONLY external outer profiles to prevent internal messy lines
+    contours, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    annotated_img = img.copy()
+
+    img_area = img.shape[0] * img.shape[1]
+
+    for cnt in contours:
+        area = cv2.contourArea(cnt)
+        perimeter = cv2.arcLength(cnt, True)
+
+        # AGGRESSIVE FILTERING: Ignore background noise (< 2500px) and full-image frames (> 85%)
+        if perimeter == 0 or area < 2500 or area > (img_area * 0.85): 
+            continue 
+
+        # Smooth out contour edges using Ramer-Douglas-Peucker algorithm
+        epsilon = 0.005 * perimeter
+        smoothed_cnt = cv2.approxPolyDP(cnt, epsilon, True)
+
+        # Feature Metrics
+        x, y, w, h = cv2.boundingRect(smoothed_cnt)
+        aspect_ratio = float(w) / h
+        hull = cv2.convexHull(smoothed_cnt)
+        hull_area = cv2.contourArea(hull)
+        solidity = float(area) / hull_area if hull_area > 0 else 0
+
+        # Classification Rules
+        if 0.75 <= aspect_ratio <= 1.25 and 0.35 <= solidity <= 0.88:
+            gear_type = "Spur / External Gear"
+            color = (0, 255, 0) # Clean Green
+        else:
+            gear_type = "Non-Gear / Irregular"
+            color = (0, 0, 255) # Red
+
+        print(f"[{os.path.basename(image_path)}] {gear_type} | Solidity: {solidity:.2f} | Aspect Ratio: {aspect_ratio:.2f}")
+
+        # Draw smooth, thick outline
+        cv2.drawContours(annotated_img, [smoothed_cnt], -1, color, 3)
+
+        # Render a clean text banner background for readability
+        label = f"{gear_type} ({solidity:.2f})"
+        (text_w, text_h), _ = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.6, 2)
+        cv2.rectangle(annotated_img, (x, y - text_h - 12), (x + text_w + 10, y), (0, 0, 0), -1)
+        cv2.putText(annotated_img, label, (x + 5, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.6, color, 2)
+
+    # Save output
+    os.makedirs(output_dir, exist_ok=True)
+    filename = os.path.basename(image_path)
+    output_path = os.path.join(output_dir, f"result_{filename}")
+    cv2.imwrite(output_path, annotated_img)
+
+    if __name__ == "__main__":
+        image_files = glob.glob("src/images/*.[jJ][pP]*[gG]") + glob.glob("src/images/*.webp")
+        print(f"Processing {len(image_files)} gear images with clean overlay rendering...\n")
+        for img_path in image_files:
+            classify_gear(img_path)
