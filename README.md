@@ -106,3 +106,6 @@ Inspection Report: Generate a console output with a structured summary of the in
 3. Operator Training Simulators: These enable technicians to practice on complex industrial control layouts in a safe environment, using tactile control boards, button panels and physical feedback systems in conjunction with virtual environments.
 
 4. Interactive Quality Stations: Physical HMI console stations with audio-visual indicators (buzzers, LEDs and displays) which direct the assembly operator through the manual routines of product assembly step-by-step.
+
+## The Code for The Sample Pictures:
+<img width="1092" height="769" alt="Screenshot 2026-09-17 at 9 37 19 am" src="https://github.com/user-attachments/assets/55d86039-2465-4efc-85f5-465e08c9cce1" />
