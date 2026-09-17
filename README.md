@@ -110,7 +110,7 @@ Inspection Report: Generate a console output with a structured summary of the in
 ## The Code for The Sample Pictures:
 <img width="1092" height="769" alt="Screenshot 2026-09-17 at 9 37 19 am" src="https://github.com/user-attachments/assets/55d86039-2465-4efc-85f5-465e08c9cce1" />
 
-# STEP TWO: TESTING ACTUAL GEAR PICTURES AND ANALYZE IT 📑:
+# STEP TWO: TESTING ACTUAL GEAR PICTURES AND ANALYSE IT 📑:
 <img width="915" height="586" alt="Screenshot 2026-09-17 at 10 50 37 am" src="https://github.com/user-attachments/assets/12fbb260-53ab-49ad-a435-843cd0c2a929" />
 
 Git Sync & Push Success
