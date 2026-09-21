@@ -301,6 +301,9 @@ Clean Text & Bounding Boxes: Draw a clean rectangle around the main gear detecte
 
 # Results for the 3rd Step ✅:
 ## Inspection Summary CSV
+
+<img width="1254" height="452" alt="Screenshot 2026-09-21 at 11 47 50 am" src="https://github.com/user-attachments/assets/90c8fd69-2637-4428-9362-aeceecd7965d" />
+
 filename,object_id,area,perimeter,solidity,circularity,aspect_ratio,classification
 images-2.jpg,1,2964.5,203.58,0.9883,0.8989,1.0,Non-Gear / Irregular
 images copy.jpg,1,8167.0,378.19,0.9803,0.7175,0.9826,Non-Gear / Irregular
