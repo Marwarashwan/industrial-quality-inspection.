@@ -400,10 +400,10 @@ large-industrial-old-heavy-rusted-260nw-2706226599.webp,5,2745.0,788.47,0.4545,0
 ## Important Notes 📝:
 Phase 1: Basic Edge Detection & Features (Done) — You were able to correctly install OpenCV, detect shape contours, compute basic metrics (Solidity, Circularity, Aspect Ratio) and apply overlays.
 
-In Phase 2: Edge Case Debugging & CSV Data Logging (Where you are now), you learned that inner cutouts (spokes) work with cv2.The code also failed to convert the image of the flagging sub-components into cv2.approxPolyDP rounded off the edges of the fine teeth of the gears. This feedback loop is crucial since it will identify where static if/else rules break.
+Phase 2: Edge Case Debugging & CSV Data Logging (Where you are now), you learned that inner cutouts (spokes) work with cv2.The code also failed to convert the image of the flagging sub-components into cv2.approxPolyDP rounded off the edges of the fine teeth of the gears. This feedback loop is crucial since it will identify where static if/else rules break.
 
-In phase 3: Robust Preprocessing & Outer Profile Isolation (Next Step), the focus shifts to cv2 and robust pre-processing, as well as outer profile isolation.All gear boundaries are isolated using this combination of RETR_EXTERNAL, fine-tuning Canny thresholds, and eliminating over-smoothing.
+Phase 3: Robust Preprocessing & Outer Profile Isolation (Next Step), the focus shifts to cv2 and robust pre-processing, as well as outer profile isolation.All gear boundaries are isolated using this combination of RETR_EXTERNAL, fine-tuning Canny thresholds, and eliminating over-smoothing.
 
 Phase 4: Machine Learning Classification — After your pipeline starts logging accurate and uncorrupted feature measurements in inspection_summary.csv, you can replace the fragile and error-prone manually-written threshold rules with an ML model trained directly on inspection_summary.csv.
 
-Your project is built on a solid architectural foundation as it is based on batch processing, automated visual output of debugging, structured feature extraction and CSV logging. Once you've executed the updated script that extracts outer boundaries, your metrics, classifications will match.
+This project is built on a solid architectural foundation as it is based on batch processing, automated visual output of debugging, structured feature extraction and CSV logging. Once its executed the updated script that extracts outer boundaries, your metrics, classifications will match.
