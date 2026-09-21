@@ -299,7 +299,7 @@ Clean Text & Bounding Boxes: Draw a clean rectangle around the main gear detecte
             classify_gear(img_path)
 
 
-# Results for the 3rd Step:
+# Results for the 3rd Step ✅:
 ## Inspection Summary CSV
 filename,object_id,area,perimeter,solidity,circularity,aspect_ratio,classification
 images-2.jpg,1,2964.5,203.58,0.9883,0.8989,1.0,Non-Gear / Irregular
