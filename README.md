@@ -297,3 +297,97 @@ Clean Text & Bounding Boxes: Draw a clean rectangle around the main gear detecte
         print(f"Processing {len(image_files)} gear images with clean overlay rendering...\n")
         for img_path in image_files:
             classify_gear(img_path)
+
+
+# Results for the 3rd Step:
+## Inspection Summary CSV
+filename,object_id,area,perimeter,solidity,circularity,aspect_ratio,classification
+images-2.jpg,1,2964.5,203.58,0.9883,0.8989,1.0,Non-Gear / Irregular
+images copy.jpg,1,8167.0,378.19,0.9803,0.7175,0.9826,Non-Gear / Irregular
+images copy.jpg,2,8348.0,599.75,0.8177,0.2916,1.0328,Spur / External Gear
+images copy.jpg,3,8285.5,378.23,0.9808,0.7278,0.8943,Non-Gear / Irregular
+images copy.jpg,4,8774.5,388.78,0.9851,0.7295,0.9091,Non-Gear / Irregular
+large-industrial-old-heavy-rusted-260nw-2706226599.webp,1,2740.0,992.57,0.5304,0.0349,1.25,Non-Gear / Irregular
+large-industrial-old-heavy-rusted-260nw-2706226599.webp,2,2564.5,988.19,0.3928,0.033,1.7286,Non-Gear / Irregular
+large-industrial-old-heavy-rusted-260nw-2706226599.webp,3,2702.0,1314.56,0.3679,0.0196,0.617,Non-Gear / Irregular
+large-industrial-old-heavy-rusted-260nw-2706226599.webp,4,2714.5,298.01,0.9301,0.3841,0.9437,Spur / External Gear
+large-industrial-old-heavy-rusted-260nw-2706226599.webp,5,2745.0,788.47,0.4545,0.0555,1.6962,Non-Gear / Irregular
+
+<img width="889" height="616" alt="Screenshot 2026-09-21 at 11 42 54 am" src="https://github.com/user-attachments/assets/067742f7-e30b-4afe-9354-c1e3d505334c" />
+
+## The Code 👩🏻‍💻:
+    import cv2
+    import numpy as np
+    import os
+    import glob
+    import csv
+    
+    def process_and_log_gears(image_dir="src/images", output_dir="src/Sample_testing"):
+        os.makedirs(output_dir, exist_ok=True)
+        csv_path = os.path.join(output_dir, "inspection_summary.csv")
+        
+        image_files = glob.glob(f"{image_dir}/*.[jJ][pP]*[gG]") + glob.glob(f"{image_dir}/*.webp") + glob.glob(f"{image_dir}/*.png")
+        
+        csv_headers = ["filename", "object_id", "area", "perimeter", "solidity", "circularity", "aspect_ratio", "classification"]
+        
+        with open(csv_path, mode="w", newline="") as csv_file:
+            writer = csv.writer(csv_file)
+            writer.writerow(csv_headers)
+    
+            for img_path in image_files:
+                filename = os.path.basename(img_path)
+                img = cv2.imread(img_path)
+                if img is None:
+                    continue
+    
+                gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+                blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+                edges = cv2.Canny(blurred, 50, 150)
+    
+                # Use RETR_EXTERNAL to grab outer silhouettes instead of inner spokes
+                contours, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+                annotated_img = img.copy()
+                img_area = img.shape[0] * img.shape[1]
+                object_count = 0
+    
+                for cnt in contours:
+                    area = cv2.contourArea(cnt)
+                    perimeter = cv2.arcLength(cnt, True)
+    
+                    # Filter out background boundaries and small noise
+                    if perimeter == 0 or area < 1500 or area > (img_area * 0.85):
+                        continue
+    
+                    object_count += 1
+    
+                    # Calculate metrics directly on raw contours for accurate tooth cutouts
+                    x, y, w, h = cv2.boundingRect(cnt)
+                    aspect_ratio = float(w) / h
+                    circularity = (4 * np.pi * area) / (perimeter ** 2)
+                    
+                    hull = cv2.convexHull(cnt)
+                    hull_area = cv2.contourArea(hull)
+                    solidity = float(area) / hull_area if hull_area > 0 else 0
+    
+                    # Adjusted classification rule: Gears with teeth typically have solidity 0.65 - 0.98
+                    if 0.75 <= aspect_ratio <= 1.25 and 0.60 <= solidity <= 0.98:
+                        classification = "Spur / External Gear"
+                        color = (0, 255, 0) # Green
+                    else:
+                        classification = "Non-Gear / Irregular"
+                        color = (0, 0, 255) # Red
+    
+                    writer.writerow([filename, object_count, round(area, 2), round(perimeter, 2), round(solidity, 4), round(circularity, 4), round(aspect_ratio, 4), classification])
+    
+                    cv2.drawContours(annotated_img, [cnt], -1, color, 3)
+                    label = f"{classification} (#{object_count})"
+                    (text_w, text_h), _ = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.5, 2)
+                    cv2.rectangle(annotated_img, (x, y - text_h - 10), (x + text_w + 10, y), (0, 0, 0), -1)
+                    cv2.putText(annotated_img, label, (x + 5, y - 4), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+    
+                output_path = os.path.join(output_dir, f"result_{filename}")
+                cv2.imwrite(output_path, annotated_img)
+                print(f"Processed: {filename} -> Found {object_count} object(s)")
+    
+    if __name__ == "__main__":
+        process_and_log_gears()
