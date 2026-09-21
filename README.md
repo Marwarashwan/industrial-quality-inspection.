@@ -107,10 +107,9 @@ Inspection Report: Generate a console output with a structured summary of the in
 
 4. Interactive Quality Stations: Physical HMI console stations with audio-visual indicators (buzzers, LEDs and displays) which direct the assembly operator through the manual routines of product assembly step-by-step.
 
-## The Code for The Sample Pictures- Step One ✅:
+## STEP-1: TESTING THE CODE + THE ML MODEL AND DEBUGGING PROCESS 📑 ✅:
 <img width="1092" height="769" alt="Screenshot 2026-09-17 at 9 37 19 am" src="https://github.com/user-attachments/assets/55d86039-2465-4efc-85f5-465e08c9cce1" />
-
-# STEP TWO ✅: TESTING ACTUAL GEAR PICTURES AND ANALYSE IT 📑:
+## ACTUAL GEAR ANALYSIS:
 <img width="915" height="586" alt="Screenshot 2026-09-17 at 10 50 37 am" src="https://github.com/user-attachments/assets/12fbb260-53ab-49ad-a435-843cd0c2a929" />
 
 Git Sync & Push Success
@@ -299,7 +298,6 @@ Clean Text & Bounding Boxes: Draw a clean rectangle around the main gear detecte
             classify_gear(img_path)
 
 
-# Results for the 3rd Step ✅:
 ## Inspection Summary CSV
 
 <img width="1254" height="452" alt="Screenshot 2026-09-21 at 11 47 50 am" src="https://github.com/user-attachments/assets/90c8fd69-2637-4428-9362-aeceecd7965d" />
