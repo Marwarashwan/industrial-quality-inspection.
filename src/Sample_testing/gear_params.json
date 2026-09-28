@@ -1,0 +1,37 @@
+{
+  "images copy.jpg": {
+    "image_size_px": [
+      680,
+      451
+    ],
+    "gears": [],
+    "meshing_pairs": []
+  },
+  "images-2.jpg": {
+    "image_size_px": [
+      570,
+      380
+    ],
+    "gears": [],
+    "meshing_pairs": []
+  },
+  "large-industrial-old-heavy-rusted-260nw-2706226599.webp": {
+    "image_size_px": [
+      260,
+      280
+    ],
+    "gears": [
+      {
+        "id": 1,
+        "cx": 129.6,
+        "cy": 129.8,
+        "tooth_count": 73,
+        "tip_radius_px": 122.8,
+        "root_radius_px": 117.2,
+        "pitch_radius_px": 120.0,
+        "confidence": 1.0
+      }
+    ],
+    "meshing_pairs": []
+  }
+}
