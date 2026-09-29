@@ -19,7 +19,7 @@ With the help of GitHub Actions, every time new defect-detection logic or thresh
 # Part Of The CodeSpace 💻
 <img width="1550" height="700" alt="Screenshot 2026-09-16 at 2 09 05 pm" src="https://github.com/user-attachments/assets/3ca65525-37d7-4249-97d0-4862a3ebcdd4" />
 
-
+```
     import cv2
     import numpy as np
     import os
@@ -60,7 +60,7 @@ With the help of GitHub Actions, every time new defect-detection logic or thresh
     if __name__ == "__main__":
         # Point to your test image path
         inspect_part("src/Sample_testing/copy.jpg")
-
+```
 ## The First Output:
 ## Output Explanation: 
 Found 8 Contours/Features: OpenCV's findContours function found 8 different boundary paths on the flower (the outline of the petals and inner shading/fold lines).
