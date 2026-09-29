@@ -135,6 +135,7 @@ The integrated cv2 is the Feature Extraction & Classification Pipeline.Directly 
 Console Telemetry: Added logging (Total raw contours found, individual Contour Area printouts, and -> MATCH statements) for real-time feedback on the vision pipeline's performance on the console.
 
 # THE CODE:
+```python
     import cv2
     import numpy as np
     import os
@@ -191,8 +192,7 @@ Console Telemetry: Added logging (Total raw contours found, individual Contour A
         print(f"Found {len(image_files)} images to process in src/images/\n")
         for img_path in image_files:
             classify_gear(img_path)
-
-
+```
 # Final Results:
 <img width="1329" height="819" alt="Screenshot 2026-09-17 at 12 11 16 pm" src="https://github.com/user-attachments/assets/0384acd9-18d0-4f4e-b6f1-a27a8233ea56" />
 <img width="1329" height="819" alt="Screenshot 2026-09-17 at 12 10 56 pm" src="https://github.com/user-attachments/assets/e3f438e0-23d6-4a16-b024-b18d4034371e" />
