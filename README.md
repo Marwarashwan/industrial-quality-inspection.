@@ -225,6 +225,7 @@ Smooth Out the Contour Overlays: Use cv2.approxPolyDP: Approximate and smooth ja
 Clean Text & Bounding Boxes: Draw a clean rectangle around the main gear detected, and label it on a separate dark background card above its top.
 
 # The Clean Version (Before testing):
+```python
     import cv2
     import numpy as np
     import os
@@ -296,7 +297,7 @@ Clean Text & Bounding Boxes: Draw a clean rectangle around the main gear detecte
         print(f"Processing {len(image_files)} gear images with clean overlay rendering...\n")
         for img_path in image_files:
             classify_gear(img_path)
-
+```
 
 ## Inspection Summary CSV
 
@@ -317,6 +318,7 @@ large-industrial-old-heavy-rusted-260nw-2706226599.webp,5,2745.0,788.47,0.4545,0
 <img width="889" height="616" alt="Screenshot 2026-09-21 at 11 42 54 am" src="https://github.com/user-attachments/assets/067742f7-e30b-4afe-9354-c1e3d505334c" />
 
 ## The Code 👩🏻‍💻:
+```python
     import cv2
     import numpy as np
     import os
@@ -392,8 +394,7 @@ large-industrial-old-heavy-rusted-260nw-2706226599.webp,5,2745.0,788.47,0.4545,0
     
     if __name__ == "__main__":
         process_and_log_gears()
-
-
+```
 
 ## Important Notes 📝:
 Phase 1: Basic Edge Detection & Features (Done) — Were able to correctly install OpenCV, detect shape contours, compute basic metrics (Solidity, Circularity, Aspect Ratio) and apply overlays.
