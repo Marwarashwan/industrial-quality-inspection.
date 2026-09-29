@@ -19,7 +19,7 @@ With the help of GitHub Actions, every time new defect-detection logic or thresh
 # Part Of The CodeSpace 💻
 <img width="1550" height="700" alt="Screenshot 2026-09-16 at 2 09 05 pm" src="https://github.com/user-attachments/assets/3ca65525-37d7-4249-97d0-4862a3ebcdd4" />
 
-```
+```python
     import cv2
     import numpy as np
     import os
