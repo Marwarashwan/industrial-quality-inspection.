@@ -563,3 +563,4 @@ Together with Stage 1, this closes out every upgrade identified for the MATLAB s
 
 ## Industrial Part Inspection — Capture Rig
 https://claude.ai/artifact/2zu4XMmXk4aPm7YFwmdhp1
+<img width="6403" height="6623" alt="Hardware" src="https://github.com/user-attachments/assets/956966e4-9458-4acc-9a6d-6a8e3b9106f2" />
