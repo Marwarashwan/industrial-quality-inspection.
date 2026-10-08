@@ -493,6 +493,7 @@ Done. Results in demo_results/
 
 ## MATLAB Results 💻:
 <img width="400" height="290" alt="matlab rsults gif" src="https://github.com/user-attachments/assets/cd99efed-6537-44f6-a818-0440a187b010" />
+
 # Stage 1: Torque & Force Estimates
 
 **What it adds:** `gear_train_sim.m` now takes an optional 5th argument, `inputTorqueNm` — an assumed torque (in Newton-metres) driving the first gear. It propagates that torque through every meshing pair in the gear train and prints each gear's torque and the resulting tangential force at its pitch circle.
