@@ -1,0 +1,158 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Inspection Rig Concept</title>
+<style>
+  /* layout: side-view physical rig (top) stacked over a labeled data-flow diagram (bottom) */
+  :root{
+    --bg:#f7f5f0; --panel:#ffffff; --ink:#1f2420; --muted:#5b6359;
+    --line:#2f3a32; --accent:#b4502a; --accent-soft:#e7c9ba;
+    --grid:#e2ddd0; --font-display:'Space Mono',ui-monospace,Menlo,Consolas,monospace;
+    --font-body:'Inter',system-ui,-apple-system,sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#15181a; --panel:#1d2124; --ink:#e9e6df; --muted:#9aa29a;
+      --line:#cfd6cc; --accent:#e08a5e; --accent-soft:#4a362c; --grid:#2a2f2c;
+      color-scheme:dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#15181a; --panel:#1d2124; --ink:#e9e6df; --muted:#9aa29a;
+    --line:#cfd6cc; --accent:#e08a5e; --accent-soft:#4a362c; --grid:#2a2f2c;
+    color-scheme:dark;
+  }
+  *{box-sizing:border-box}
+  body{background:var(--bg);color:var(--ink);font-family:var(--font-body);margin:0;padding-inline:20px;padding-block:28px 48px}
+  .wrap{max-width:980px;margin:0 auto}
+  h1{font-family:var(--font-display);font-size:clamp(20px,3vw,28px);font-weight:700;letter-spacing:-0.01em;margin:0 0 6px;text-wrap:balance}
+  .sub{color:var(--muted);font-size:14px;line-height:1.5;max-width:65ch;margin:0 0 24px}
+  .tag{display:inline-block;font-family:var(--font-display);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);border:1px solid var(--accent-soft);background:var(--accent-soft);padding:3px 8px;border-radius:3px;margin-bottom:14px}
+  figure{margin:0;background:var(--panel);border:1px solid var(--grid);border-radius:8px;padding:18px 18px 14px;overflow-x:auto}
+  svg{display:block;width:100%;height:auto;min-width:720px}
+  figcaption{font-size:12.5px;color:var(--muted);margin-top:10px;line-height:1.5;border-top:1px solid var(--grid);padding-top:10px}
+  .note{margin-top:22px;border-left:3px solid var(--accent);padding:10px 14px;background:var(--panel);border-radius:0 6px 6px 0;font-size:13.5px;line-height:1.6;color:var(--ink)}
+  .note b{color:var(--accent)}
+  text{font-family:var(--font-body)}
+  .mono{font-family:var(--font-display)}
+</style>
+
+<div class="wrap">
+  <span class="tag">Estimated · not yet built</span>
+  <h1>Industrial Part Inspection — Capture Rig</h1>
+  <p class="sub">A proposed physical setup for running gear_inspector.py on real parts instead of flat photos: a fixed overhead camera, diffuse lighting, and a plain platen feeding the same Python pipeline already built and tested.</p>
+
+  <figure>
+    <svg viewBox="0 0 1000 760" role="img" aria-label="Side-view diagram of a camera boom, ring light, and platen above a worktable, flowing down into a data-flow diagram showing the camera feeding a compute unit running gear_inspector.py, which outputs to a display and to gear_params.json, which hands off to gear_train_sim.m in MATLAB.">
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+        </marker>
+      </defs>
+      <g stroke="currentColor" fill="none">
+
+        <!-- ============ SECTION 1: physical rig, side view ============ -->
+        <text x="40" y="34" class="mono" font-size="13" fill="currentColor" letter-spacing="1" opacity="0.65">01 — PHYSICAL RIG (SIDE VIEW)</text>
+
+        <!-- worktable -->
+        <line x1="120" y1="330" x2="620" y2="330" stroke-width="2"/>
+        <line x1="120" y1="330" x2="120" y2="360" stroke-width="2"/>
+        <line x1="620" y1="330" x2="620" y2="360" stroke-width="2"/>
+        <text x="370" y="352" text-anchor="middle" font-size="12" fill="currentColor" opacity="0.6">worktable</text>
+
+        <!-- platen -->
+        <rect x="270" y="308" width="200" height="22" rx="2" fill="var(--panel)" stroke="var(--accent)" stroke-width="2"/>
+        <text x="370" y="323" text-anchor="middle" font-size="11.5" fill="var(--accent)" class="mono">INSPECTION PLATEN</text>
+
+        <!-- a part sitting on the platen -->
+        <circle cx="370" cy="298" r="16" fill="var(--panel)" stroke="currentColor" stroke-width="1.6"/>
+        <circle cx="370" cy="298" r="6" fill="none" stroke="currentColor" stroke-width="1.4"/>
+        <text x="400" y="302" font-size="11" fill="currentColor" opacity="0.7">part under test</text>
+
+        <!-- boom post -->
+        <line x1="150" y1="330" x2="150" y2="80" stroke-width="3"/>
+        <line x1="150" y1="80" x2="370" y2="80" stroke-width="3"/>
+        <text x="80" y="210" font-size="11" fill="currentColor" opacity="0.6" transform="rotate(-90 80 210)">fixed boom</text>
+
+        <!-- ring light -->
+        <ellipse cx="370" cy="105" rx="42" ry="10" fill="none" stroke="currentColor" stroke-width="2.4"/>
+        <text x="430" y="100" font-size="11.5" fill="currentColor">diffuse ring light</text>
+        <text x="430" y="114" font-size="10.5" fill="currentColor" opacity="0.6">(even light → clean background</text>
+        <text x="430" y="127" font-size="10.5" fill="currentColor" opacity="0.6">difference segmentation)</text>
+
+        <!-- camera -->
+        <rect x="352" y="80" width="36" height="24" rx="3" fill="var(--panel)" stroke="currentColor" stroke-width="2"/>
+        <circle cx="370" cy="92" r="6" fill="none" stroke="currentColor" stroke-width="1.6"/>
+        <text x="470" y="90" font-size="12.5" font-weight="600" fill="currentColor">overhead camera</text>
+        <text x="470" y="104" font-size="10.5" fill="currentColor" opacity="0.6">(USB webcam or Pi Camera)</text>
+
+        <!-- fixed focal distance -->
+        <line x1="370" y1="104" x2="370" y2="296" stroke-width="1.2" stroke-dasharray="4 4" opacity="0.6"/>
+        <text x="200" y="200" font-size="10.5" fill="currentColor" opacity="0.65">fixed focal distance —</text>
+        <text x="200" y="213" font-size="10.5" fill="currentColor" opacity="0.65">keeps px→mm scale repeatable</text>
+        <text x="200" y="226" font-size="10.5" fill="currentColor" opacity="0.65">between captures</text>
+
+        <!-- trigger -->
+        <rect x="540" y="296" width="60" height="26" rx="4" fill="var(--panel)" stroke="currentColor" stroke-width="1.8"/>
+        <text x="570" y="313" text-anchor="middle" font-size="10" fill="currentColor">TRIGGER</text>
+        <line x1="540" y1="309" x2="490" y2="309" stroke-width="1.6" marker-end="url(#arrow)" opacity="0.8"/>
+        <text x="610" y="296" font-size="10.5" fill="currentColor" opacity="0.6">button or IR sensor —</text>
+        <text x="610" y="309" font-size="10.5" fill="currentColor" opacity="0.6">fires a capture when a</text>
+        <text x="610" y="322" font-size="10.5" fill="currentColor" opacity="0.6">part is placed</text>
+
+        <!-- divider -->
+        <line x1="40" y1="400" x2="960" y2="400" stroke-width="1" stroke-dasharray="2 6" opacity="0.4"/>
+
+        <!-- ============ SECTION 2: data flow ============ -->
+        <text x="40" y="432" class="mono" font-size="13" fill="currentColor" letter-spacing="1" opacity="0.65">02 — DATA FLOW INTO THE EXISTING PIPELINE</text>
+
+        <!-- camera frame box -->
+        <rect x="40" y="470" width="150" height="56" rx="4" fill="var(--panel)" stroke="currentColor" stroke-width="1.8"/>
+        <text x="115" y="494" text-anchor="middle" font-size="12" font-weight="600" fill="currentColor">Camera</text>
+        <text x="115" y="510" text-anchor="middle" font-size="10" fill="currentColor" opacity="0.6">one still frame</text>
+
+        <line x1="190" y1="498" x2="250" y2="498" stroke-width="1.8" marker-end="url(#arrow)"/>
+        <text x="220" y="488" text-anchor="middle" font-size="10" fill="currentColor" opacity="0.65">USB / CSI</text>
+
+        <!-- compute box -->
+        <rect x="250" y="462" width="210" height="72" rx="4" fill="var(--panel)" stroke="var(--accent)" stroke-width="2.2"/>
+        <text x="355" y="488" text-anchor="middle" font-size="12.5" font-weight="700" fill="var(--accent)">Compute unit</text>
+        <text x="355" y="504" text-anchor="middle" font-size="10.5" fill="currentColor" opacity="0.75">Raspberry Pi / mini PC</text>
+        <text x="355" y="518" text-anchor="middle" font-size="10.5" fill="currentColor" class="mono" opacity="0.8">running gear_inspector.py</text>
+
+        <line x1="460" y1="480" x2="530" y2="440" stroke-width="1.8" marker-end="url(#arrow)"/>
+        <text x="520" y="430" font-size="10" fill="currentColor" opacity="0.65">classification +</text>
+        <text x="520" y="443" font-size="10" fill="currentColor" opacity="0.65">measurements</text>
+
+        <!-- output box -->
+        <rect x="530" y="400" width="190" height="56" rx="4" fill="var(--panel)" stroke="currentColor" stroke-width="1.8"/>
+        <text x="625" y="424" text-anchor="middle" font-size="12" font-weight="600" fill="currentColor">Output</text>
+        <text x="625" y="440" text-anchor="middle" font-size="10" fill="currentColor" opacity="0.6">small screen + pass/fail LEDs</text>
+
+        <line x1="460" y1="516" x2="530" y2="546" stroke-width="1.8" marker-end="url(#arrow)"/>
+        <text x="505" y="562" font-size="10" fill="currentColor" opacity="0.65">writes</text>
+
+        <!-- json box -->
+        <rect x="530" y="518" width="190" height="56" rx="4" fill="var(--panel)" stroke="currentColor" stroke-width="1.8"/>
+        <text x="625" y="542" text-anchor="middle" font-size="12" font-weight="600" fill="currentColor" class="mono">gear_params.json</text>
+        <text x="625" y="558" text-anchor="middle" font-size="10" fill="currentColor" opacity="0.6">centres · radii · tooth counts</text>
+
+        <line x1="720" y1="546" x2="790" y2="546" stroke-width="1.8" marker-end="url(#arrow)"/>
+        <text x="755" y="536" text-anchor="middle" font-size="10" fill="currentColor" opacity="0.65">hand-off</text>
+
+        <!-- matlab box -->
+        <rect x="790" y="518" width="170" height="56" rx="4" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/>
+        <text x="875" y="542" text-anchor="middle" font-size="11.5" font-weight="700" fill="var(--accent)" class="mono">gear_train_sim.m</text>
+        <text x="875" y="558" text-anchor="middle" font-size="10" fill="currentColor" opacity="0.65">MATLAB simulation</text>
+
+      </g>
+    </svg>
+    <figcaption>
+      Top half: a fixed overhead camera on a boom, ring-lit to keep lighting even (the segmentation step in gear_inspector.py measures color distance from the background, so shadows and glare are the main failure mode to design against). Bottom half: how one captured frame actually moves through the pipeline already built — Python classifies and measures the part, writes gear_params.json, and that file is what gear_train_sim.m already consumes in MATLAB.
+    </figcaption>
+  </figure>
+
+  <div class="note">
+    <b>Status:</b> this is an estimated starting point, not a built or purchased rig — no component has been tested in this configuration. The choices follow directly from constraints the software already has: a plain, evenly-lit background (gear_inspector.py's segmentation assumes one), and a fixed camera distance (so the one-reference-measurement px→mm scale in gear_train_sim.m stays consistent capture to capture). The trigger and output stage are the least settled part — a plain keypress to capture is enough for a prototype; the button/IR sensor and pass-fail LEDs are what it would take to make it feel like a real inspection station instead of a desk setup.
+  </div>
+</div>
+
+</body></html>
