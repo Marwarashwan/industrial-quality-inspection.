@@ -490,3 +490,7 @@ Done. Results in demo_results/
 - **99.4% ± 0.1%** 5-fold cross-validation accuracy (consistent, not a lucky split)
 - **100% (6/6)** correct on independently-built test photos with known ground truth
 - `hole_ratio` and `hole_concentricity` (the bearing-bore measurements) rank in the **top 2 most important features** the model relies on — confirming the bore-detection logic is doing real, meaningful work, not just along for the ride
+
+## MATLAB Results 💻:
+<img width="400" height="290" alt="matlab rsults gif" src="https://github.com/user-attachments/assets/cd99efed-6537-44f6-a818-0440a187b010" />
+<img width="947" height="673" alt="Screenshot 2026-10-08 at 10 25 04 am" src="https://github.com/user-attachments/assets/6d0751c7-199c-4ede-b78c-cdf6406e6886" />
