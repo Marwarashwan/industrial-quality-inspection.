@@ -517,3 +517,46 @@ This is an **ideal estimate, not a measurement**. The photo gives geometry only 
 
 It's the first time this simulation turns a photo into something load-bearing can be reasoned about, not just a kinematic animation — a step toward the MATLAB stage actually being useful for design/sizing questions, not just visualizing tooth counts and rotation direction.
 <img width="947" height="673" alt="Screenshot 2026-10-08 at 10 25 04 am" src="https://github.com/user-attachments/assets/6d0751c7-199c-4ede-b78c-cdf6406e6886" />
+
+# Stage 2: Real Involute Gear Teeth & Interactive Controls
+
+**What it adds:** two upgrades to `gear_train_sim.m`'s animation — the schematic tick-mark teeth from Stage 1 are replaced with real involute tooth profiles, and the fixed 10-second animation is replaced with a live speed slider and a play/pause button.
+
+## The geometry
+
+Real gear teeth aren't straight lines — their flanks follow the involute of a circle, the same curve gear-design textbooks use. For a point at radius `r` on the flank, its local pressure angle is:
+
+```
+alpha(r) = acos(baseRadius / r)
+```
+
+and its angular position, swept from where the involute leaves the base circle, is given by the involute function:
+
+```
+inv(alpha) = tan(alpha) - alpha
+```
+
+The flank is aligned so the tooth has a fixed half-angle at the pitch circle (since a photo alone can't measure true tooth thickness, a standard 50/50 tooth-to-gap split is assumed):
+
+```
+theta(r) = halfToothAngle - (inv(alpha(r)) - inv(alpha(pitchRadius)))
+```
+
+This makes the tooth **widest at the root and narrowest at the tip** — the same taper real gear teeth have.
+
+**How I verified it before trusting it:** I couldn't run MATLAB directly to check this, so I ran the identical trigonometry in Python first. The checks: radius stays bounded between root and tip, the angle sweeps monotonically all the way around (which guarantees the tooth outline can't cross itself), the outline closes properly, and the tooth came out wider at the root (5.4°) than at the tip (1.8°) — matching real gear geometry. Only after that passed did I translate it into MATLAB. It was then confirmed correct in a real run (teeth visibly tapering and meshing properly in the live figure).
+
+## The interactive controls
+
+- **Speed slider** — drags gear 1's speed anywhere from −180 to +180 deg/s, live, while the animation is running. Every other gear rescales automatically, keeping the correct ratio and spin direction.
+- **Play / Pause button** — freezes the animation on command (useful for inspecting exactly how two teeth mesh) and resumes cleanly.
+
+Built with a MATLAB `timer` object and nested functions sharing the figure's workspace, rather than the earlier blocking `for`-loop animation — this also makes the controls actually responsive instead of only readable after the animation finishes.
+
+## Honest limitation
+
+The involute flank is real geometry, but the **root fillet is simplified** — below the base circle, it's drawn as a straight line and a circular arc, not the true trochoidal curve a manufacturing rack would actually cut. This is accurate enough to see real tooth shape and how teeth mesh, but it is **not a manufacturing drawing** and hasn't been validated for tooth-clearance or interference checking. Pressure angle (20°) and the 50/50 tooth-thickness split are also standard assumptions, not measurements — a photo gives no way to confirm either.
+
+## Why it matters for the project
+
+Together with Stage 1, this closes out every upgrade identified for the MATLAB simulation: torque/force estimates, real involute teeth, and interactive controls. The only thing left on the MATLAB side is validating the simulated speed ratio against a real, physically measured gear train — which needs an actual part in hand, not more code.
