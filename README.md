@@ -560,3 +560,6 @@ The involute flank is real geometry, but the **root fillet is simplified** — b
 ## Why it matters for the project
 
 Together with Stage 1, this closes out every upgrade identified for the MATLAB simulation: torque/force estimates, real involute teeth, and interactive controls. The only thing left on the MATLAB side is validating the simulated speed ratio against a real, physically measured gear train — which needs an actual part in hand, not more code.
+
+## Industrial Part Inspection — Capture Rig
+https://claude.ai/artifact/2zu4XMmXk4aPm7YFwmdhp1
