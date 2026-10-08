@@ -493,4 +493,26 @@ Done. Results in demo_results/
 
 ## MATLAB Results 💻:
 <img width="400" height="290" alt="matlab rsults gif" src="https://github.com/user-attachments/assets/cd99efed-6537-44f6-a818-0440a187b010" />
+# Stage 1: Torque & Force Estimates
+
+**What it adds:** `gear_train_sim.m` now takes an optional 5th argument, `inputTorqueNm` — an assumed torque (in Newton-metres) driving the first gear. It propagates that torque through every meshing pair in the gear train and prints each gear's torque and the resulting tangential force at its pitch circle.
+
+## The physics
+
+Assuming a perfectly lossless (100% efficient, frictionless) gear mesh, mechanical power is conserved across every connection — so torque and rotation speed always trade off exactly inversely. A gear spinning faster always carries proportionally less torque:
+
+```
+torque_b = torque_a / (teeth_a / teeth_b)
+force_N  = torque_Nm / (pitchRadius_mm / 1000)
+```
+
+I verified this by hand against a real run (68-tooth gear driving a 19-tooth gear, 2.5 Nm input): torque dropped to 0.6985 Nm on the smaller gear, and power stayed conserved in both directions — 2.5 Nm × 1.047 rad/s ≈ 0.6985 Nm × 3.747 rad/s ≈ 2.618 W either way, direction flipping sign as expected for a reversed mesh.
+
+## Honest limitation
+
+This is an **ideal estimate, not a measurement**. The photo gives geometry only — tooth counts, radii, positions — never load. A real gear train always delivers somewhat less torque than this number, due to bearing friction, tooth friction, and backlash. Treat every torque/force figure as an upper bound, not a spec.
+
+## Why it matters for the project
+
+It's the first time this simulation turns a photo into something load-bearing can be reasoned about, not just a kinematic animation — a step toward the MATLAB stage actually being useful for design/sizing questions, not just visualizing tooth counts and rotation direction.
 <img width="947" height="673" alt="Screenshot 2026-10-08 at 10 25 04 am" src="https://github.com/user-attachments/assets/6d0751c7-199c-4ede-b78c-cdf6406e6886" />
