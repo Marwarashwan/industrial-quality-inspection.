@@ -108,3 +108,7 @@ The camera connects by USB or the Pi's camera ribbon, and the ring light runs fr
 5. Run the design rule check. Fix every unconnected pin and every net with a single connection.
 6. Check each input net against the blocks above. Confirm no 5 V net touches a GPIO.
 7. Only then convert to a PCB, if you want one. A breadboard or perfboard build from this schematic works too.
+
+
+## Block Diagram:
+<img width="938" height="769" alt="Screenshot 2026-11-02 at 8 35 20 am" src="https://github.com/user-attachments/assets/e6e80692-d0e1-4b9d-8aa8-8bbab5e83df1" />
